@@ -2,7 +2,17 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
+import { useToast } from '@/hooks/use-toast';
+
+type CartItem = {
+  id: number;
+  amount: number;
+  quantity: number;
+};
 
 const giftCards = [
   { id: 1, amount: 1000, popular: false },
@@ -56,11 +66,55 @@ const faqs = [
 
 export default function Index() {
   const [activeSection, setActiveSection] = useState('home');
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { toast } = useToast();
 
   const scrollToSection = (section: string) => {
     setActiveSection(section);
     const element = document.getElementById(section);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const addToCart = (cardId: number, amount: number) => {
+    const existingItem = cart.find(item => item.id === cardId);
+    
+    if (existingItem) {
+      setCart(cart.map(item => 
+        item.id === cardId 
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      ));
+    } else {
+      setCart([...cart, { id: cardId, amount, quantity: 1 }]);
+    }
+
+    toast({
+      title: 'Добавлено в корзину',
+      description: `Карта на ${amount.toLocaleString('ru-RU')} ₽ добавлена`,
+    });
+  };
+
+  const removeFromCart = (cardId: number) => {
+    setCart(cart.filter(item => item.id !== cardId));
+  };
+
+  const updateQuantity = (cardId: number, change: number) => {
+    setCart(cart.map(item => {
+      if (item.id === cardId) {
+        const newQuantity = item.quantity + change;
+        return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
+      }
+      return item;
+    }).filter(item => item.quantity > 0));
+  };
+
+  const getTotalAmount = () => {
+    return cart.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
+  };
+
+  const getTotalItems = () => {
+    return cart.reduce((sum, item) => sum + item.quantity, 0);
   };
 
   return (
@@ -98,7 +152,105 @@ export default function Index() {
                 FAQ
               </button>
             </div>
-            <Button size="sm">Войти</Button>
+            <div className="flex items-center space-x-3">
+              <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
+                <SheetTrigger asChild>
+                  <Button size="sm" variant="outline" className="relative">
+                    <Icon name="ShoppingCart" size={18} />
+                    {getTotalItems() > 0 && (
+                      <Badge 
+                        className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                      >
+                        {getTotalItems()}
+                      </Badge>
+                    )}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-lg">
+                  <SheetHeader>
+                    <SheetTitle className="text-2xl">Корзина</SheetTitle>
+                  </SheetHeader>
+                  
+                  {cart.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-[400px] text-center">
+                      <Icon name="ShoppingCart" size={64} className="text-muted-foreground mb-4 opacity-30" />
+                      <p className="text-lg text-muted-foreground mb-2">Корзина пуста</p>
+                      <p className="text-sm text-muted-foreground">Добавьте карты из каталога</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col h-full mt-8">
+                      <div className="flex-1 overflow-auto space-y-4">
+                        {cart.map((item) => (
+                          <Card key={item.id}>
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-start mb-3">
+                                <div>
+                                  <p className="font-semibold text-lg">{item.amount.toLocaleString('ru-RU')} ₽</p>
+                                  <p className="text-sm text-muted-foreground">Apple Gift Card</p>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeFromCart(item.id)}
+                                >
+                                  <Icon name="Trash2" size={16} />
+                                </Button>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => updateQuantity(item.id, -1)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Icon name="Minus" size={14} />
+                                  </Button>
+                                  <span className="w-8 text-center font-medium">{item.quantity}</span>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => updateQuantity(item.id, 1)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Icon name="Plus" size={14} />
+                                  </Button>
+                                </div>
+                                <p className="font-semibold">
+                                  {(item.amount * item.quantity).toLocaleString('ru-RU')} ₽
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                      
+                      <div className="mt-6 space-y-4">
+                        <Separator />
+                        <div className="flex justify-between items-center text-lg font-semibold">
+                          <span>Итого:</span>
+                          <span className="text-2xl">{getTotalAmount().toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <Button 
+                          className="w-full h-12 text-base" 
+                          size="lg"
+                          onClick={() => {
+                            toast({
+                              title: 'Переход к оплате',
+                              description: 'Функция оплаты будет доступна в следующей версии',
+                            });
+                          }}
+                        >
+                          Оформить заказ
+                          <Icon name="ArrowRight" size={18} className="ml-2" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </SheetContent>
+              </Sheet>
+              <Button size="sm">Войти</Button>
+            </div>
           </div>
         </div>
       </nav>
@@ -171,8 +323,12 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full h-11" variant={card.popular ? "default" : "outline"}>
-                    Купить карту
+                  <Button 
+                    className="w-full h-11" 
+                    variant={card.popular ? "default" : "outline"}
+                    onClick={() => addToCart(card.id, card.amount)}
+                  >
+                    Добавить в корзину
                   </Button>
                 </CardContent>
               </Card>
