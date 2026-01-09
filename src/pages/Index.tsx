@@ -119,7 +119,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+      <nav className="sticky top-0 z-50 glass border-b border-white/20 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
@@ -181,7 +181,7 @@ export default function Index() {
                     <div className="flex flex-col h-full mt-8">
                       <div className="flex-1 overflow-auto space-y-4">
                         {cart.map((item) => (
-                          <Card key={item.id}>
+                          <Card key={item.id} className="glass-card border-white/40">
                             <CardContent className="p-4">
                               <div className="flex justify-between items-start mb-3">
                                 <div>
@@ -266,7 +266,7 @@ export default function Index() {
             </p>
             <Button 
               size="lg" 
-              className="h-12 px-8 text-base"
+              className="h-12 px-8 text-base shadow-2xl hover:shadow-primary/50 transition-all duration-300"
               onClick={() => scrollToSection('catalog')}
             >
               Выбрать номинал
@@ -278,7 +278,7 @@ export default function Index() {
             {features.map((feature, index) => (
               <Card 
                 key={index} 
-                className="border-2 hover:shadow-lg transition-shadow duration-300 animate-scale-in"
+                className="glass-card border-white/30 hover:shadow-2xl transition-all duration-300 animate-scale-in hover:scale-105"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <CardHeader>
@@ -292,7 +292,7 @@ export default function Index() {
         </div>
       </section>
 
-      <section id="catalog" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+      <section id="catalog" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Выберите номинал</h2>
@@ -305,8 +305,8 @@ export default function Index() {
             {giftCards.map((card) => (
               <Card 
                 key={card.id} 
-                className={`relative overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${
-                  card.popular ? 'border-primary border-2' : ''
+                className={`relative overflow-hidden glass-card hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${
+                  card.popular ? 'border-primary/50 border-2 shadow-xl' : 'border-white/30'
                 }`}
               >
                 {card.popular && (
@@ -342,7 +342,7 @@ export default function Index() {
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">Как это работает</h2>
           
           <div className="space-y-8">
-            <Card className="border-l-4 border-l-primary">
+            <Card className="border-l-4 border-l-primary glass-card border-white/30 shadow-md">
               <CardHeader>
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
@@ -358,7 +358,7 @@ export default function Index() {
               </CardHeader>
             </Card>
 
-            <Card className="border-l-4 border-l-primary">
+            <Card className="border-l-4 border-l-primary glass-card border-white/30 shadow-md">
               <CardHeader>
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
@@ -374,7 +374,7 @@ export default function Index() {
               </CardHeader>
             </Card>
 
-            <Card className="border-l-4 border-l-primary">
+            <Card className="border-l-4 border-l-primary glass-card border-white/30 shadow-md">
               <CardHeader>
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
@@ -390,7 +390,7 @@ export default function Index() {
               </CardHeader>
             </Card>
 
-            <Card className="border-l-4 border-l-primary">
+            <Card className="border-l-4 border-l-primary glass-card border-white/30 shadow-md">
               <CardHeader>
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
@@ -409,7 +409,7 @@ export default function Index() {
         </div>
       </section>
 
-      <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+      <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Часто задаваемые вопросы</h2>
           <p className="text-center text-muted-foreground mb-12 text-lg">
@@ -421,7 +421,7 @@ export default function Index() {
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="bg-white border rounded-lg px-6"
+                className="glass-dark border-white/40 rounded-lg px-6 shadow-md"
               >
                 <AccordionTrigger className="text-left font-semibold hover:no-underline">
                   {faq.question}
@@ -435,7 +435,7 @@ export default function Index() {
         </div>
       </section>
 
-      <footer className="bg-foreground text-background py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="glass-dark text-foreground py-12 px-4 sm:px-6 lg:px-8 border-t border-white/30">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
