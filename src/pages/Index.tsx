@@ -1,14 +1,326 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import Icon from '@/components/ui/icon';
 
-const Index = () => {
+const giftCards = [
+  { id: 1, amount: 1000, popular: false },
+  { id: 2, amount: 2000, popular: true },
+  { id: 3, amount: 3000, popular: false },
+  { id: 4, amount: 5000, popular: false },
+  { id: 5, amount: 10000, popular: false },
+  { id: 6, amount: 15000, popular: false },
+];
+
+const features = [
+  {
+    icon: 'Smartphone',
+    title: 'Быстрая доставка',
+    description: 'Код карты приходит на email мгновенно после оплаты'
+  },
+  {
+    icon: 'ShieldCheck',
+    title: 'Безопасно',
+    description: 'Официальные карты Apple с гарантией активации'
+  },
+  {
+    icon: 'Gift',
+    title: 'Удобный подарок',
+    description: 'Идеальный вариант для любого повода и получателя'
+  }
+];
+
+const faqs = [
+  {
+    question: 'Как активировать карту?',
+    answer: 'Откройте App Store, нажмите на свой профиль, выберите "Погасить подарочную карту" и введите полученный код.'
+  },
+  {
+    question: 'Где можно использовать карту?',
+    answer: 'В App Store, iTunes Store, Apple Music, iCloud+ и для покупки подписок на сервисы Apple.'
+  },
+  {
+    question: 'Есть ли срок действия карты?',
+    answer: 'Нет, карты Apple Gift Card не имеют срока действия и могут быть использованы в любое время.'
+  },
+  {
+    question: 'Можно ли вернуть карту?',
+    answer: 'Электронные карты возврату не подлежат после получения кода активации.'
+  },
+  {
+    question: 'Какие способы оплаты доступны?',
+    answer: 'Принимаем банковские карты Visa, Mastercard, МИР, а также электронные кошельки и СБП.'
+  }
+];
+
+export default function Index() {
+  const [activeSection, setActiveSection] = useState('home');
+
+  const scrollToSection = (section: string) => {
+    setActiveSection(section);
+    const element = document.getElementById(section);
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
+              <Icon name="Gift" size={28} className="text-primary" />
+              <span className="text-xl font-semibold">Apple Gift Card</span>
+            </div>
+            <div className="hidden md:flex space-x-8">
+              <button 
+                onClick={() => scrollToSection('home')}
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
+                Главная
+              </button>
+              <button 
+                onClick={() => scrollToSection('catalog')}
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
+                Каталог
+              </button>
+              <button 
+                onClick={() => scrollToSection('about')}
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
+                О карте
+              </button>
+              <button 
+                onClick={() => scrollToSection('faq')}
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
+                FAQ
+              </button>
+            </div>
+            <Button size="sm">Войти</Button>
+          </div>
+        </div>
+      </nav>
+
+      <section id="home" className="pt-20 pb-32 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center animate-fade-in">
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+              Apple Gift Card
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
+              Подарите доступ к миллионам приложений, игр, музыки и фильмов в экосистеме Apple
+            </p>
+            <Button 
+              size="lg" 
+              className="h-12 px-8 text-base"
+              onClick={() => scrollToSection('catalog')}
+            >
+              Выбрать номинал
+              <Icon name="ArrowRight" size={18} className="ml-2" />
+            </Button>
+          </div>
+
+          <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card 
+                key={index} 
+                className="border-2 hover:shadow-lg transition-shadow duration-300 animate-scale-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <CardHeader>
+                  <Icon name={feature.icon as any} size={40} className="text-primary mb-4" />
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardDescription className="text-base">{feature.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="catalog" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Выберите номинал</h2>
+            <p className="text-lg text-muted-foreground">
+              Все карты доставляются мгновенно на ваш email
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {giftCards.map((card) => (
+              <Card 
+                key={card.id} 
+                className={`relative overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${
+                  card.popular ? 'border-primary border-2' : ''
+                }`}
+              >
+                {card.popular && (
+                  <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                    Популярно
+                  </div>
+                )}
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-center h-32 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg mb-4">
+                    <Icon name="CreditCard" size={64} className="text-primary opacity-50" />
+                  </div>
+                  <CardTitle className="text-3xl font-bold text-center">
+                    {card.amount.toLocaleString('ru-RU')} ₽
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button className="w-full h-11" variant={card.popular ? "default" : "outline"}>
+                    Купить карту
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">Как это работает</h2>
+          
+          <div className="space-y-8">
+            <Card className="border-l-4 border-l-primary">
+              <CardHeader>
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                    1
+                  </div>
+                  <div>
+                    <CardTitle className="mb-2">Выберите номинал</CardTitle>
+                    <CardDescription className="text-base">
+                      Доступны карты от 1 000 до 15 000 рублей. Выберите подходящую сумму в зависимости от ваших потребностей.
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-l-4 border-l-primary">
+              <CardHeader>
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                    2
+                  </div>
+                  <div>
+                    <CardTitle className="mb-2">Оплатите покупку</CardTitle>
+                    <CardDescription className="text-base">
+                      Безопасная оплата банковской картой, электронным кошельком или через СБП. Все транзакции защищены.
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-l-4 border-l-primary">
+              <CardHeader>
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                    3
+                  </div>
+                  <div>
+                    <CardTitle className="mb-2">Получите код</CardTitle>
+                    <CardDescription className="text-base">
+                      Код активации придет на указанный email в течение нескольких минут после успешной оплаты.
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-l-4 border-l-primary">
+              <CardHeader>
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                    4
+                  </div>
+                  <div>
+                    <CardTitle className="mb-2">Активируйте в App Store</CardTitle>
+                    <CardDescription className="text-base">
+                      Введите полученный код в вашем Apple ID и пользуйтесь всеми сервисами Apple без ограничений.
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Часто задаваемые вопросы</h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg">
+            Ответы на популярные вопросы о покупке и использовании карт
+          </p>
+
+          <Accordion type="single" collapsible className="space-y-4">
+            {faqs.map((faq, index) => (
+              <AccordionItem 
+                key={index} 
+                value={`item-${index}`}
+                className="bg-white border rounded-lg px-6"
+              >
+                <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </section>
+
+      <footer className="bg-foreground text-background py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <Icon name="Gift" size={24} />
+                <span className="font-semibold text-lg">Apple Gift Card</span>
+              </div>
+              <p className="text-sm opacity-80">
+                Официальный магазин подарочных карт Apple
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Поддержка</h3>
+              <ul className="space-y-2 text-sm opacity-80">
+                <li>Служба поддержки</li>
+                <li>Условия использования</li>
+                <li>Политика конфиденциальности</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Контакты</h3>
+              <ul className="space-y-2 text-sm opacity-80">
+                <li className="flex items-center space-x-2">
+                  <Icon name="Mail" size={16} />
+                  <span>support@giftcard.ru</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Icon name="Phone" size={16} />
+                  <span>8 (800) 555-35-35</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-background/20 pt-8 text-center text-sm opacity-60">
+            © 2026 Apple Gift Card Store. Все права защищены.
+          </div>
+        </div>
+      </footer>
     </div>
   );
-};
-
-export default Index;
+}
